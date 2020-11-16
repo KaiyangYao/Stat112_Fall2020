@@ -1,0 +1,79 @@
+---
+title: 'Tidy Tuesday #2'
+author: "Kaiyang Yao"
+output: 
+  html_document:
+    df_print: paged
+    code_download: true
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+# You may want to comment this out at first so you see important messages and warnings
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
+```
+
+```{r libraries}
+library(tidyverse)     # for graphing and data cleaning
+library(lubridate)     # for date manipulation
+library(ggthemes)      # for even more plotting themes
+library(ggpubr)        # for combining ggplots
+theme_set(theme_minimal())       # My favorite ggplot() theme :)
+```
+
+```{r}
+# Read in the data for the week
+mobile <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-10/mobile.csv')
+landline <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-10/landline.csv')
+```
+
+This week's data is all about phones! 
+
+<center>
+
+![](https://images-na.ssl-images-amazon.com/images/I/61i8xYfGsFL._SL1500_.jpg){width=200} ![](https://i.pcmag.com/imagery/reviews/03xdTO0Ka4H4KvEgtSPg4c2-12..1569479325.jpg){width=200}
+</center>
+
+Topic: The comparison of mobile and landline subscriptions over years in China.
+
+```{r}
+china_mobile <-
+  mobile %>% 
+    filter(entity == "China")
+
+china_landline <-
+  landline %>% 
+  filter(entity == "China")
+
+pt1 <- ggplot(data = china_mobile) +
+  geom_col(mapping = aes(x = year, y = mobile_subs, fill = gdp_per_cap)) +
+  scale_fill_gradient2(high = "red") +
+  labs(title = "Mobile Subscriptions Per 100 People In China Over Years",
+       x = "",
+       y = "",
+       fill = "GDP Per Capita")
+
+pt2 <- ggplot(data = china_landline) +
+  geom_col(mapping = aes(x = year, y = landline_subs, fill = gdp_per_cap)) +
+  scale_fill_gradient2(high = "darkgoldenrod1") +
+  labs(title = "Landline Subscriptions Per 100 People In China Over Years",
+       x = "",
+       y = "",
+       fill = "GDP Per Capita",
+       caption = "@Kaiyang Yao")
+
+
+figure <- ggarrange(pt1, pt2,
+                    labels = c("A", "B"),
+                    nrow = 2)
+
+figure
+  
+```
+
+
+
+
+
+
+

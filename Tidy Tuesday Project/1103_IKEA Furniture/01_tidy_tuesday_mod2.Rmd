@@ -1,0 +1,60 @@
+---
+title: 'Tidy Tuesday #1'
+author: "Kaiyang Yao"
+output: 
+  html_document:
+    df_print: paged
+    code_download: true
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+# You may want to comment this out at first so you see important messages and warnings
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
+```
+
+```{r libraries}
+library(tidyverse)     # for graphing and data cleaning
+library(lubridate)     # for date manipulation
+library(ggthemes)      # for even more plotting themes
+theme_set(theme_minimal())       # My favorite ggplot() theme :)
+```
+
+```{r}
+# Read in the data for the week
+ikea <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-03/ikea.csv')
+```
+
+This week's data is all about IKEA furniture. 
+
+![](https://www.ikea.com/images/assembly-man-pictogram-4fc2f37df000615be7998ff990afd0b2.jpg){width=100}
+
+```{r}
+ikea_yellow <- rgb(1, 0.85, 0.1)
+ikea_blue <- rgb(0, 0.32, 0.72)
+ikea %>% 
+  group_by(category, sellable_online) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(y = category, x = count, fill = sellable_online)) +
+  scale_fill_manual(values=c("TRUE" = ikea_yellow, "FALSE" = "black")) +
+  geom_col() +
+  theme(plot.background = element_rect(fill = ikea_blue),
+        plot.title = element_text(color = ikea_yellow, size = 16, face = "bold", 
+                                  hjust = 0.65),
+        plot.caption = element_text(hjust = 1.5),
+        legend.title = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        axis.title.x = element_text(color = "white", size = 13, face = "bold"),
+        axis.title.y = element_text(color = "white", size = 13, face = "bold"),
+        axis.text  = element_text(color = "white"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(title = "Number of items that are sellable online in each category",
+       caption = "@Kaiyang Yao",
+       x = "Count",
+       y = "Category",
+       fill = "Sellable Online")
+  
+```
+
+
